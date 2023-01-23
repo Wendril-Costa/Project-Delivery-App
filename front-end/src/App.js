@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={ <Navigate to="/login" /> } />
         {/* // https://reactrouter.com/en/main/components/navigate */}
-        <Route exact path="/login" component={ Login } />
+        <Route exact path="/login" element={ <Login /> } />
       </Routes>
     </BrowserRouter>
   );
