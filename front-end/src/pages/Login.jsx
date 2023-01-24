@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import emailValidate from '../utils/email.validate';
 import passwordValidate from '../utils/password.validate';
+import postLogin from '../api/login';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [error, setError] = useState(false);
+  const [error, setError] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const navigate = useNavigate();
 
   const inputRules = async () => {
     const validadeEmail = emailValidate(email);
@@ -28,6 +31,19 @@ function Login() {
     const { value } = target;
     setPassword(value);
     inputRules();
+  };
+
+  const validateLogin = async (newPost) => {
+    const sucess = 200;
+    const notFound = 404;
+    const newPostLogin = await postLogin(newPost);
+    console.log(newPostLogin);
+    if (newPostLogin.status === notFound) {
+      setError(true);
+    }
+    if (newPostLogin.status === sucess) {
+      navigate('/customer');
+    }
   };
 
   return (
@@ -54,6 +70,7 @@ function Login() {
           type="button"
           data-testid="common_login__button-login"
           disabled={ disabled }
+          onClick={ () => validateLogin({ email, password }) }
         >
           LOGIN
         </button>
@@ -61,12 +78,18 @@ function Login() {
           type="button"
           data-testid="common_login__button-register"
           className="btn-without-login"
-          // onClick={ () => history.push('register') }
+          onClick={ () => navigate('/register') }
         >
           Ainda não tenho conta
         </button>
 
-        <p data-testid="common_login__element-invalid-email">Login inválido!!</p>
+        {
+          error && (
+            <div data-testid="common_login__element-invalid-email">
+              Login Inválido
+            </div>
+          )
+        }
 
       </div>
 
