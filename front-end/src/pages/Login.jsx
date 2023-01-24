@@ -33,7 +33,7 @@ function Login() {
 
   useEffect(() => {
     inputRules();
-  }, [email, password]);
+  });
 
   return (
     <form>
