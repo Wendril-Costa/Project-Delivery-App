@@ -1,19 +1,33 @@
 import React, { useState } from 'react';
-// import emailValidate from '../utils/email.validate';
-// import passwordValidate from '../utils/password.validate';
+import emailValidate from '../utils/email.validate';
+import passwordValidate from '../utils/password.validate';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  // const [error, setError] = useState(false);
+  const [disabled, setDisabled] = useState(true);
 
-  const rulesCheck = (event) => {
-    event.preventDefault();
-    const magicNumber = 6;
+  const inputRules = async () => {
+    const validadeEmail = emailValidate(email);
+    const validadePassword = passwordValidate(password);
+    if (validadeEmail && validadePassword) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  };
 
-    const regexMail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const handleEmail = ({ target }) => {
+    const { value } = target;
+    setEmail(value);
+    inputRules();
+  };
 
-    if (password.length < magicNumber || !regexMail.test(email)) return setError(true);
+  const handlePassword = ({ target }) => {
+    const { value } = target;
+    setPassword(value);
+    inputRules();
   };
 
   return (
@@ -26,7 +40,7 @@ function Login() {
           data-testid="common_login__input-email"
           placeholder="type your email"
           value={ email }
-          onChange={ (event) => setEmail(event.target.value) }
+          onChange={ handleEmail }
         />
         <h3>Senha</h3>
         <input
@@ -34,12 +48,12 @@ function Login() {
           name="password"
           data-testid="common_login__input-password"
           value={ password }
-          onChange={ (event) => setPassword(event.target.value) }
+          onChange={ handlePassword }
         />
         <button
           type="button"
           data-testid="common_login__button-login"
-          onClick={ rulesCheck }
+          disabled={ disabled }
         >
           LOGIN
         </button>
@@ -52,8 +66,7 @@ function Login() {
           Ainda não tenho conta
         </button>
 
-        {error
-        && <p data-testid="common_login__element-invalid-email">Login inválido!!</p>}
+        <p data-testid="common_login__element-invalid-email">Login inválido!!</p>
 
       </div>
 
