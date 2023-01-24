@@ -1,6 +1,6 @@
-module.exports = function emailValidate(email) {
-  const regex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-  if (regex.test(email)) {
-    return true;
-  }
+const emailValidate = (email) => {
+  const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+  return emailRegex.test(email);
 };
+
+export default emailValidate;

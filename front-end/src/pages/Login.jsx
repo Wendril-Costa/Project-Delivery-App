@@ -1,50 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import emailValidate from '../utils/email.validate';
-import passwordValidate from '../utils/password.validate';
-import postLogin from '../api/login';
+// import passwordValidate from '../utils/password.validate';
+// import postLogin from '../api/login';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
+  const [error] = useState(false);
   const navigate = useNavigate();
 
-  const inputRules = async () => {
-    const validadeEmail = emailValidate(email);
-    const validadePassword = passwordValidate(password);
-    if (validadeEmail && validadePassword) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+  const inputRules = () => {
+    const validEmail = emailValidate(email);
+    const FIVE = 5;
+
+    setDisabled(validEmail && password.length > FIVE);
   };
 
-  const handleEmail = ({ target }) => {
-    const { value } = target;
-    setEmail(value);
+  // const handleLogin = async (newPost) => {
+  //   const sucess = 200;
+  //   const notFound = 404;
+  //   const newPostLogin = await postLogin(newPost);
+  //   console.log(newPostLogin);
+  //   if (newPostLogin.status === notFound) {
+  //     setError(true);
+  //   }
+  //   if (newPostLogin.status === sucess) {
+  //     navigate('/customer');
+  //   }
+  // };
+
+  useEffect(() => {
     inputRules();
-  };
-
-  const handlePassword = ({ target }) => {
-    const { value } = target;
-    setPassword(value);
-    inputRules();
-  };
-
-  const validateLogin = async (newPost) => {
-    const sucess = 200;
-    const notFound = 404;
-    const newPostLogin = await postLogin(newPost);
-    console.log(newPostLogin);
-    if (newPostLogin.status === notFound) {
-      setError(true);
-    }
-    if (newPostLogin.status === sucess) {
-      navigate('/customer');
-    }
-  };
+  }, [email, password]);
 
   return (
     <form>
@@ -56,7 +45,7 @@ function Login() {
           data-testid="common_login__input-email"
           placeholder="type your email"
           value={ email }
-          onChange={ handleEmail }
+          onChange={ ({ target }) => setEmail(target.value) }
         />
         <h3>Senha</h3>
         <input
@@ -64,13 +53,13 @@ function Login() {
           name="password"
           data-testid="common_login__input-password"
           value={ password }
-          onChange={ handlePassword }
+          onChange={ ({ target }) => setPassword(target.value) }
         />
         <button
           type="button"
           data-testid="common_login__button-login"
-          disabled={ disabled }
-          onClick={ () => validateLogin({ email, password }) }
+          disabled={ !disabled }
+          // onClick={ handleLogin }
         >
           LOGIN
         </button>
